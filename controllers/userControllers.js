@@ -53,42 +53,23 @@ exports.addUser = async (req, res) => {
     }
 };
 
-// exports.updateUser = (req, res) => {
-//     // Extract user data from request body
-//     const { namaUser, email} = req.body;
-//     const id_user = req.params.id_user;
-//     // Validation (can be enhanced further)
-//     if (!namaUser || !email || !id_user) {
-//         return res.status(400).send({ error: 'Please provide all required fields: namaUser, email, username, and password' });
-//     }
+exports.updateUser = async (req, res) => {
+    const { id_user } = req.params;
+    const { namaUser, password } = req.body;
 
-//     // Email validation (basic check)
-//     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-//         return res.status(400).send({ error: 'Kesalahan penulisan format email' });
-//     }
+    try {
+        const result = await model.updateUser(id_user, namaUser, password);
 
-//     // Username validation (basic check)
-//     if (username.length < 3 || username.length > 20) {
-//         return res.status(400).send({ error: 'Nama pengguna minimal 3 karakter dengan huruf (a-z), angka (0-9), titik (.), dan/atau garis bawah (_)' });
-//     }
-
-//     // Construct SQL query with prepared statements to prevent SQL injection
-//     const sql = `UPDATE user SET namaUser = ?, email = ? WHERE id_user = ?`;
-//     const values = [namaUser, email, id_user];
-
-//     connection.query(sql, values, (err, result) => {
-//         if (err) {
-//             // Handle potential duplicate username or email errors more specifically
-//             if (err.code === 'ER_DUP_ENTRY') {
-//                 return res.status(409).send({ error: 'Nama pengguna ataupun email sudah terpakai' });
-//             }
-//                 return res.status(500).send({ error: 'Database error' });
-//         }
-
-//         // User created successfully
-//         res.status(201).send({ message: 'Profil berhasil diperbarui!' });
-//     });
-// };
+        if (result) {
+            res.status(200).json({ message: 'User updated successfully' });
+        } else {
+            res.status(404).json({ error: 'User not found or no changes applied' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 // exports.deleteUser = (req, res) => {
 //     // Extract user ID from request parameter
