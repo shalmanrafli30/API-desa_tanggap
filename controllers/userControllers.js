@@ -71,30 +71,16 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-// exports.deleteUser = (req, res) => {
-//     // Extract user ID from request parameter
-//     const id_user = req.params.id_user;
-
-//     // Validation (basic check)
-//     if (!id_user) {
-//         return res.status(400).send({ error: 'Please provide user ID' });
-//     }
-
-//     // Construct SQL query with prepared statements to prevent SQL injection
-//     const sql = `DELETE FROM user WHERE id_user = ?`;
-//     const value = id_user;
-
-//     connection.query(sql, value, (err, result) => {
-//         if (err) {
-//             return res.status(500).send({ error: 'Database error' });
-//         }
-
-//       // Check if the user was deleted
-//         if (result.affectedRows === 0) {
-//             return res.status(404).send({ error: 'Data tidak ditemukan' });
-//         }
-
-//         // User deleted successfully
-//         res.status(200).send({ message: 'Akun berhasil dihapus!' });
-//     });
-// };
+exports.deleteUser = async (req, res) => {
+    const {id_user} = req.params;
+    try {
+        await model.deleteUser(id_user);
+        res.json ({
+            message: 'Delete user success',
+            data: null
+        })
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}

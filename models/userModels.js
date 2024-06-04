@@ -91,9 +91,15 @@ const updateUser = async (id_user, namaUser, password) => {
     }
 };
 
+const deleteUser = (id_user) => {
+    const SQLQuery = `DELETE FROM user WHERE id_user = ${id_user}`
+    return db.execute(SQLQuery);
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
     addUser,
     updateUser,
+    deleteUser,
 }
