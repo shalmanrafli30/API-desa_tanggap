@@ -1,6 +1,7 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 const morgan = require('morgan');
 const middlewareLogReq = require('./middleware/logs');
 const userRoutes = require('./routes/userRoutes');
