@@ -10,17 +10,20 @@ exports.getAllUsers = async (req, res) => {
     })
 };
 
-// exports.getUserById = (req, res) => {
-//     connection.query(`SELECT * FROM user WHERE id_user = ${req.params.id_user}`, (err, rows, fields) => {
-//         if (err) {
-//             res.status(500).send({ error: 'Database query failed' });
-//         } else if (rows.length === 0) {
-//             res.status(404).send({ error: 'User not found' });
-//         } else {
-//             res.status(200).json(rows[0]);
-//         }
-//     });
-// };
+exports.getUserById = async (req, res) => {
+    try {
+        const {id_user} = req.params;
+        const [data] = await model.getUserById(id_user);
+        
+        res.json({
+            message:`GET user data success`,
+            data: data,
+        })
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({error: 'Internal server error'})
+    }
+};
 
 // exports.addUser = (req, res) => {
 //     // Extract user data from request body
