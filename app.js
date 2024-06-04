@@ -5,7 +5,7 @@ const morgan = require('morgan');
 
 const userRoutes = require('./routes/userRoutes');
 
-app.use(morgan('dev'));
+app.use(morgan('dev'))
 
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use('/users', userRoutes);
