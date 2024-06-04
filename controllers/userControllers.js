@@ -25,53 +25,33 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-// exports.addUser = (req, res) => {
-//     // Extract user data from request body
-//     const { namaUser, email, username, password } = req.body;
-
-//     // Validation (can be enhanced further)
-//     if (!namaUser || !email || !username || !password) {
-//         return res.status(400).send({ error: 'Please provide all required fields: namaUser, email, username, and password' });
-//     }
-
-//     // Email validation (basic check)
-//     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-//         return res.status(400).send({ error: 'Kesalahan penulisan format email' });
-//     }
-
-//     // Username validation (basic check)
-//     if (username.length < 3 || username.length > 20) {
-//         return res.status(400).send({ error: 'Nama pengguna minimal 3 karakter dengan huruf (a-z), angka (0-9), titik (.), dan/atau garis bawah (_)' });
-//     }
-
-//     // Password validation (new requirements)
-//     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[._])\w{6,}$/.test(password)) {
-//         return res.status(400).send({ error: 'Kata sandi minimal 6 karakter dengan huruf (a-z), angka (0-9), titik (.), dan/atau garis bawah (_)' });
-//     }
-
-//     // Hash password before storing
-//     bcrypt.hash(password, 10, (err, hash) => {
-//         if (err) {
-//             return res.status(500).send({ error: 'Error hashing password' });
-//         }
-//       // Construct SQL query with prepared statements to prevent SQL injection
-//         const sql = `INSERT INTO user (namaUser, email, username, password) VALUES (?, ?, ?, ?)`;
-//         const values = [namaUser, email, username, hash];
-
-//         connection.query(sql, values, (err, result) => {
-//             if (err) {
-//                 // Handle potential duplicate username or email errors more specifically
-//                 if (err.code === 'ER_DUP_ENTRY') {
-//                     return res.status(409).send({ error: 'Nama pengguna ataupun email sudah terpakai' });
-//                 }
-//                     return res.status(500).send({ error: 'Database error' });
-//             }
-
-//             // User created successfully
-//             res.status(201).send({ message: 'Registrasi Berhasil!' });
-//         });
-//     });
-// };
+exports.addUser = async (req, res) => {
+    const { body } = req;
+    try {
+        await model.addUser(body);
+        res.json({
+            message: 'Registrasi berhasil',
+        });
+    } catch (error) {
+        let errorMessage = 'Internal server error';
+        
+        // Custom error messages based on different error types
+        if (error.message.includes('required fields')) {
+            errorMessage = 'Please provide all required fields: namaUser, username, email, and password';
+        } else if (error.message.includes('already in use')) {
+            errorMessage = 'Username or email already in use';
+        } else if (error.message.includes('Invalid email format')) {
+            errorMessage = 'Invalid email format';
+        } else if (error.message.includes('Username must be between')) {
+            errorMessage = 'Username must be between 3 and 20 characters and must not contain spaces';
+        } else if (error.message.includes('Password must be at least')) {
+            errorMessage = 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character';
+        }
+        
+        console.error(error.message);
+        res.status(400).json({ error: errorMessage });
+    }
+};
 
 // exports.updateUser = (req, res) => {
 //     // Extract user data from request body
