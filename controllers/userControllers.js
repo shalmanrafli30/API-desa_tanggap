@@ -1,4 +1,5 @@
 const connection = require('../config/database');
+const bcrypt = require('bcrypt');
 
 exports.getAllUsers = (req, res) => {
     connection.query("SELECT * FROM user", (err, rows, fields) => {
