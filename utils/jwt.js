@@ -12,6 +12,7 @@ const secretKey = process.env.JWT_SECRET || generateSecretKey();
 const generateToken = (user) => {
     const payload = {
         id_user: user.id_user,
+        id_admin: user.id_admin,
         username: user.username,
         email: user.email
     };
