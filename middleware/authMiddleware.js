@@ -1,4 +1,4 @@
-const { verifyToken } = require('../jwt');
+const { verifyToken } = require('../utils/jwt');
 
 const authenticate = (req, res, next) => {
     const token = req.headers['authorization'];

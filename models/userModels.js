@@ -1,6 +1,6 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
-const { generateToken } = require('../jwt');
+const { generateToken } = require('../utils/jwt');
 
 const getAllUsers = () => {
     const SQLQuery = 'SELECT * FROM user';
