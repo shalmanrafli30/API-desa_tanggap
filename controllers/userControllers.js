@@ -84,3 +84,13 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+exports.loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const { token, user } = await model.loginUser(username, password);
+        res.json({ token, user });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};

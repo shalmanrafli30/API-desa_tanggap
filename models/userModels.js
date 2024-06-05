@@ -1,5 +1,6 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
+const { generateToken } = require('../jwt');
 
 const getAllUsers = () => {
     const SQLQuery = 'SELECT * FROM user';
@@ -96,10 +97,32 @@ const deleteUser = (id_user) => {
     return db.execute(SQLQuery);
 }
 
+const loginUser = async (username, password) => {
+    if (!username || !password) {
+        throw new Error('Please provide both username and password');
+    }
+
+    const [users] = await db.execute(`SELECT * FROM user WHERE username = ?`, [username]);
+    if (users.length === 0) {
+        throw new Error('Invalid username or password');
+    }
+
+    const user = users[0];
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        throw new Error('Invalid username or password');
+    }
+
+    const token = generateToken(user);
+    return { token, user: { id_user: user.id_user, username: user.username, email: user.email, namaUser: user.namaUser } };
+};
+
 module.exports = {
     getAllUsers,
     getUserById,
     addUser,
     updateUser,
     deleteUser,
+    loginUser,
 }
