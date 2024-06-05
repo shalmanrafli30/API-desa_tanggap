@@ -12,16 +12,20 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
     try {
-        const {id_user} = req.params;
-        const [data] = await model.getUserById(id_user);
+        const { id_user } = req.params;
+        const data = await model.getUserById(id_user);
         
         res.json({
-            message:`GET user data success`,
+            message: 'GET user data success',
             data: data,
-        })
+        });
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({error: 'Internal server error'})
+        if (error.message.includes('User not found')) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
     }
 };
 
@@ -37,7 +41,7 @@ exports.addUser = async (req, res) => {
         
         // Custom error messages based on different error types
         if (error.message.includes('required fields')) {
-            errorMessage = 'Please provide all required fields: namaUser, username, email, and password';
+            errorMessage = 'Please provide all required fields: fullName, username, email, and password';
         } else if (error.message.includes('already in use')) {
             errorMessage = 'Username or email already in use';
         } else if (error.message.includes('Invalid email format')) {
@@ -55,10 +59,10 @@ exports.addUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     const { id_user } = req.params;
-    const { namaUser, password } = req.body;
+    const { fullName, password, address } = req.body;
 
     try {
-        const result = await model.updateUser(id_user, namaUser, password);
+        const result = await model.updateUser(id_user, fullName, password, address);
 
         if (result) {
             res.status(200).json({ message: 'User updated successfully' });

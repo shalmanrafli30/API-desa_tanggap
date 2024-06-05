@@ -7,17 +7,21 @@ const getAllUsers = () => {
     return db.execute(SQLQuery);    
 }
 
-const getUserById = (id_user) => {
-    const SQLQuery = `SELECT * FROM user WHERE id_user = ${id_user}`;
-    return db.execute(SQLQuery);
-}
+const getUserById = async (id_user) => {
+    const SQLQuery = `SELECT * FROM user WHERE id_user = ?`;
+    const [result] = await db.execute(SQLQuery, [id_user]);
+    if (result.length === 0) {
+        throw new Error('User not found');
+    }
+    return result;
+};
 
 const addUser = async (body) => {
-    const { namaUser, username, email, password } = body;
+    const { fullName, username, email, password } = body;
 
     // Validation checks
-    if (!namaUser || !username || !email || !password) {
-        throw new Error('Please provide all required fields: namaUser, username, email, and password');
+    if (!fullName || !username || !email || !password) {
+        throw new Error('Please provide all required fields: fullName, username, email, and password');
     }
 
     // Check if username or email already exist
@@ -45,48 +49,48 @@ const addUser = async (body) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert user into the database
-    const SQLQuery =    `INSERT INTO user (namaUser, username, email, password)
+    const SQLQuery =    `INSERT INTO user (fullName, username, email, password)
                         VALUES (?, ?, ?, ?)`;
-    const values = [namaUser, username, email, hashedPassword];
+    const values = [fullName, username, email, hashedPassword];
 
     return db.execute(SQLQuery, values);
 };
 
-const updateUser = async (id_user, namaUser, password) => {
-    // Validation checks
+const updateUser = async (id_user, fullName, password, address) => {
     if (!id_user) {
         throw new Error('Please provide the user ID');
     }
 
-    // Password validation
     if (password && (password.length < 8 || !/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+[\]{}|;:',.<>/?]).{8,}/.test(password))) {
         throw new Error('Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character');
     }
 
-    // Hash password before updating
     const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
 
-    // Construct SQL query for update
     let SQLQuery = 'UPDATE user SET';
     const values = [];
 
-    if (namaUser) {
-        SQLQuery += ' namaUser = ?,';
-        values.push(namaUser);
+    if (fullName) {
+        SQLQuery += ' fullName = ?,';
+        values.push(fullName);
+    }
+
+    if (address) {
+        SQLQuery += ' address = ?,';
+        values.push(address);
     }
 
     if (hashedPassword) {
         SQLQuery += ' password = ?,';
         values.push(hashedPassword);
     }
-
-    // Remove trailing comma and add WHERE clause
+    
     SQLQuery = SQLQuery.replace(/,$/, ' WHERE id_user = ?');
     values.push(id_user);
 
     try {
         const [result] = await db.execute(SQLQuery, values);
-        return result.affectedRows > 0; // Return true if at least one row is updated
+        return result.affectedRows > 0;
     } catch (error) {
         throw new Error('Database error');
     }
@@ -115,7 +119,7 @@ const loginUser = async (username, password) => {
     }
 
     const token = generateToken(user);
-    return { token, user: { id_user: user.id_user, username: user.username, email: user.email, namaUser: user.namaUser } };
+    return { token, user: { id_user: user.id_user, username: user.username, email: user.email, fullName: user.fullName } };
 };
 
 module.exports = {
