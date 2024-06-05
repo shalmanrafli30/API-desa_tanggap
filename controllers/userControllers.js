@@ -89,7 +89,11 @@ exports.loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
         const { token, user } = await model.loginUser(username, password);
-        res.json({ token, user });
+        res.json({ 
+            message: 'Login Succesful!',
+            token,
+            user,
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
