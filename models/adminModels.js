@@ -1,6 +1,5 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
-const { generateToken } = require('../utils/jwt');
 
 const getAllAdmin = () => {
     const SQLQuery = 'SELECT * FROM admin';

@@ -1,5 +1,8 @@
 // const bcrypt = require('bcrypt');
 const model = require('../models/userModels');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.getAllUsers = async (req, res) => {
     const [data] = await model.getAllUsers();
@@ -90,15 +93,23 @@ exports.deleteUser = async (req, res) => {
 }
 
 exports.loginUser = async (req, res) => {
+    const { username, password } = req.body;
+
     try {
-        const { username, password } = req.body;
-        const { token, user } = await model.loginUser(username, password);
-        res.json({ 
-            message: 'Login Succesful!',
-            token,
-            user,
+        const user = await model.loginUser(username, password);
+        // Generate token
+        const token = jwt.sign({ id_user: user.id_user, username: user.username }, JWT_SECRET, {
+            expiresIn: '1d'
         });
+        // Save token to .env file
+        // const envFilePath = path.resolve(__dirname, '..', '.env');
+        // fs.appendFileSync(envFilePath, `\nJWT_TOKEN=${token}`);
+
+        res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        // Handle errors
+        res.status(401).json({ error: error.message });
     }
 };
+
+

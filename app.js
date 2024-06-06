@@ -7,6 +7,7 @@ const middlewareLogReq = require('./middleware/logs');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/laporanRoutes');
+// const authenticated = require('./middleware/authMiddleware');
 
 app.use(morgan('dev'))
 

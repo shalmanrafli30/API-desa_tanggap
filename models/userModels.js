@@ -1,6 +1,6 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
-const { generateToken } = require('../utils/jwt');
+// const { generateToken } = require('../utils/jwt');
 
 const getAllUsers = () => {
     const SQLQuery = 'SELECT * FROM user';
@@ -118,8 +118,7 @@ const loginUser = async (username, password) => {
         throw new Error('Invalid password');
     }
 
-    const token = generateToken(user);
-    return { token, user: { id_user: user.id_user, username: user.username, email: user.email, fullName: user.fullName } };
+    return user;
 };
 
 module.exports = {

@@ -1,19 +1,18 @@
-const { verifyToken } = require('../utils/jwt');
+const jwt = require('jsonwebtoken');
 
-const authenticate = (req, res, next) => {
-    const token = req.headers['authorization'];
+exports.authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ message: 'Access denied, no token provided' });
+        return res.status(401).json({ error: 'Token not provided' });
     }
 
-    const decoded = verifyToken(token);
-    if (!decoded) {
-        return res.status(401).json({ message: 'Invalid token' });
-    }
-
-    req.user = decoded;
-    next();
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid token' });
+        }
+        req.id_user = decoded.id_user; // Store user ID for future use
+        next(); // Proceed to the next middleware or route handler
+    });
 };
-
-module.exports = authenticate;
