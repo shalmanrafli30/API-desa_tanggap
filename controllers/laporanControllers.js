@@ -26,4 +26,27 @@ exports.getLaporanById = async (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
-}
+};
+
+exports.addLaporan = async (req, res) => {
+    try {
+        // Extract the user ID from the authenticated request
+        const id_user = req.id_user;
+        console.log('ID User:', id_user); // Add this line for debugging
+
+        // Extract the report details from the request body
+        const { judulLaporan, isiLaporan, lokasiLaporan } = req.body;
+        if (!judulLaporan || !isiLaporan || !lokasiLaporan) {
+            return res.status(400).send({ message: 'Please provide all required fields.' });
+        }
+
+        // Add the new report using the model
+        await model.addLaporan({ judulLaporan, isiLaporan, lokasiLaporan, id_user });
+
+        // Send a success response
+        res.status(201).send({ message: 'Report added successfully.' });
+    } catch (error) {
+        console.error('Error adding report:', error);
+        res.status(500).send({ message: 'Internal server error.' });
+    }
+};
