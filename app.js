@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const middlewareLogReq = require('./middleware/logs');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const reportRoutes = require('./routes/laporanRoutes');
 
 app.use(morgan('dev'))
 
@@ -13,6 +14,7 @@ app.use(middlewareLogReq);
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use('/users', userRoutes);
 app.use('/admin', adminRoutes);
+app.use('/lapor', reportRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found!');
