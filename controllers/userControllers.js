@@ -29,10 +29,10 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-exports.addUser = async (req, res) => {
+exports.register = async (req, res) => {
     const { body } = req;
     try {
-        await model.addUser(body);
+        await model.register(body);
         res.json({
             message: 'Registrasi berhasil',
         });

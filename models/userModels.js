@@ -16,7 +16,7 @@ const getUserById = async (id_user) => {
     return result;
 };
 
-const addUser = async (body) => {
+const register = async (body) => {
     const { fullName, username, email, password } = body;
 
     // Validation checks
@@ -108,14 +108,14 @@ const loginUser = async (username, password) => {
 
     const [users] = await db.execute(`SELECT * FROM user WHERE username = ?`, [username]);
     if (users.length === 0) {
-        throw new Error('Invalid username or password');
+        throw new Error('Invalid username');
     }
 
     const user = users[0];
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-        throw new Error('Invalid username or password');
+        throw new Error('Invalid password');
     }
 
     const token = generateToken(user);
@@ -125,7 +125,7 @@ const loginUser = async (username, password) => {
 module.exports = {
     getAllUsers,
     getUserById,
-    addUser,
+    register,
     updateUser,
     deleteUser,
     loginUser,
