@@ -1,6 +1,7 @@
 // const bcrypt = require('bcrypt');
 const model = require('../models/userModels');
 const jwt = require('jsonwebtoken');
+const BlacklistToken = require('../models/blacklistTokenModel');
 require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -109,4 +110,17 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+exports.logoutUser = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1]; // Asumsi token dikirim dalam header Authorization
+
+    try {
+        // Simpan token ke dalam blacklist
+        const blacklistToken = new BlacklistToken({ token });
+        await blacklistToken.save();
+
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to logout user' });
+    }
+};
 
