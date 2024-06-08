@@ -12,7 +12,7 @@ exports.getAllLaporan = async (req, res) => {
 
 
 
-exports.showDetailLaporanById = async (req, res) => {
+exports.getDetailLaporanById = async (req, res) => {
     try {
         const { idLaporan } = req.params;
         const data = await model.getLaporanById(idLaporan);
