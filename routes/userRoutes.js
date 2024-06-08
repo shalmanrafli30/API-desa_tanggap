@@ -12,5 +12,6 @@ router.delete('/id_user=:id_user', userController.deleteUser);
 router.post('/login', userController.loginUser);
 router.post('/logout', authenticateToken, userController.logoutUser);
 router.post('/add-laporan', authenticateToken, laporanController.addLaporan);
+router.get('/laporan-saya', authenticateToken, laporanController.getUserLaporan);
 
 module.exports = router;
