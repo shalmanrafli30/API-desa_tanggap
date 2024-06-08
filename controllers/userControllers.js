@@ -101,9 +101,6 @@ exports.loginUser = async (req, res) => {
         const token = jwt.sign({ id_user: user.id_user, username: user.username }, JWT_SECRET, {
             expiresIn: '1d'
         });
-        // Save token to .env file
-        // const envFilePath = path.resolve(__dirname, '..', '.env');
-        // fs.appendFileSync(envFilePath, `\nJWT_TOKEN=${token}`);
 
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
