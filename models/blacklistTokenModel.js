@@ -1,17 +1,17 @@
-const mongoose = require('mongoose');
+const db = require('../config/database');
 
-const blacklistTokenSchema = new mongoose.Schema({
-    token: {
-        type: String,
-        required: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        expires: '1d', // Token akan otomatis dihapus setelah 1 hari
-    },
-});
+const addBlacklistToken = async (token) => {
+    const query = 'INSERT INTO blacklist_tokens (token, createdAt) VALUES (?, NOW())';
+    await db.execute(query, [token]);
+};
 
-const BlacklistToken = mongoose.model('BlacklistToken', blacklistTokenSchema);
+const isTokenBlacklisted = async (token) => {
+    const query = 'SELECT * FROM blacklist_tokens WHERE token = ?';
+    const [rows] = await db.execute(query, [token]);
+    return rows.length > 0;
+};
 
-module.exports = BlacklistToken;
+module.exports = {
+    addBlacklistToken,
+    isTokenBlacklisted,
+};

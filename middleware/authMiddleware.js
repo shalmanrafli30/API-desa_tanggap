@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const BlacklistToken = require('../models/blacklistTokenModel');
+const blacklistModel = require('../models/blacklistTokenModel');
 
 exports.authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -9,7 +9,7 @@ exports.authenticateToken = async (req, res, next) => {
         return res.status(401).json({ error: 'Token not provided' });
     }
 
-    const blacklisted = await BlacklistToken.findOne({ token });
+    const blacklisted = await blacklistModel.isTokenBlacklisted(token);
     if (blacklisted) {
         return res.status(403).json({ error: 'Token has been blacklisted' });
     }

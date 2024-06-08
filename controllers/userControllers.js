@@ -1,7 +1,7 @@
 // const bcrypt = require('bcrypt');
 const model = require('../models/userModels');
 const jwt = require('jsonwebtoken');
-const BlacklistToken = require('../models/blacklistTokenModel');
+const blacklistToken = require('../models/blacklistTokenModel');
 require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -115,12 +115,10 @@ exports.logoutUser = async (req, res) => {
 
     try {
         // Simpan token ke dalam blacklist
-        const blacklistToken = new BlacklistToken({ token });
-        await blacklistToken.save();
+        await blacklistToken.addBlacklistToken(token);
 
         res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to logout user' });
     }
 };
-

@@ -10,6 +10,7 @@ router.post('/', userController.register);
 router.patch('/id_user=:id_user', authenticateToken, userController.updateUser);
 router.delete('/id_user=:id_user', userController.deleteUser);
 router.post('/login', userController.loginUser);
+router.post('/logout', authenticateToken, userController.logoutUser);
 router.post('/add-laporan', authenticateToken, laporanController.addLaporan);
 
 module.exports = router;
