@@ -8,14 +8,36 @@ exports.getAllLaporan = async (req, res) => {
         data: data,
     })
 };
-// const { id_user } = req.params;
 
+exports.getUserLaporan = async (req, res) => {
+    try {
+        const id_user = req.id_user; // Use the user ID from the authenticated token
 
+        // Validate id_user
+        if (!id_user) {
+            return res.status(400).json({ error: 'id_user is required' });
+        }
+
+        const data = await model.getUserLaporan(id_user);
+
+        res.json({
+            message: 'GET laporan success',
+            data: data,
+        });
+    } catch (error) {
+        console.error(error.message);
+        if (error.message.includes('Laporan not found')) {
+            res.status(404).json({ error: 'Laporan not found' });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+};
 
 exports.getDetailLaporanById = async (req, res) => {
     try {
         const { idLaporan } = req.params;
-        const data = await model.getLaporanById(idLaporan);
+        const data = await model.getDetailLaporanById(idLaporan);
 
         res.json({
             message: 'GET laporan success',

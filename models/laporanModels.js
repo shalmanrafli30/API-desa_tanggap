@@ -6,9 +6,19 @@ getAllLaporan = () => {
     return db.execute(SQLQuery);
 }
 
-getUserLaporan = async (id_user) => {
+const getUserLaporan = async (id_user) => {
+    // Validate id_user
+    if (!id_user) {
+        throw new Error('id_user is required');
+    }
 
-}
+    const SQLQuery = `SELECT * FROM report WHERE id_user = ?`;
+    const [result] = await db.execute(SQLQuery, [id_user]);
+    if (result.length === 0) {
+        throw new Error('Laporan not found');
+    }
+    return result;
+};
 
 getDetailLaporanById = async (idLaporan) => {
     const SQLQuery = `SELECT * FROM report WHERE idLaporan = ?`;
@@ -31,4 +41,5 @@ module.exports = {
     getAllLaporan,
     getDetailLaporanById,
     addLaporan,
+    getUserLaporan,
 }
