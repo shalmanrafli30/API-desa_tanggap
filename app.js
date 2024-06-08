@@ -15,7 +15,7 @@ app.use(middlewareLogReq);
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use('/users', userRoutes);
 app.use('/admin', adminRoutes);
-app.use('/lapor', reportRoutes);
+app.use('/laporan', reportRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found!');
