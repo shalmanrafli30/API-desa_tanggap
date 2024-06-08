@@ -8,8 +8,11 @@ exports.getAllLaporan = async (req, res) => {
         data: data,
     })
 };
+// const { id_user } = req.params;
 
-exports.getLaporanById = async (req, res) => {
+
+
+exports.showDetailLaporanById = async (req, res) => {
     try {
         const { idLaporan } = req.params;
         const data = await model.getLaporanById(idLaporan);

@@ -6,7 +6,7 @@ getAllLaporan = () => {
     return db.execute(SQLQuery);
 }
 
-getLaporanById = async (idLaporan) => {
+showDetailLaporanById = async (idLaporan) => {
     const SQLQuery = `SELECT * FROM report WHERE idLaporan = ?`;
     const [result] = await db.execute(SQLQuery, [idLaporan]);
     if (result.length === 0) {
@@ -25,6 +25,6 @@ addLaporan = async ({ judulLaporan, isiLaporan, lokasiLaporan, id_user }) => {
 
 module.exports = {
     getAllLaporan,
-    getLaporanById,
+    showDetailLaporanById,
     addLaporan,
 }
