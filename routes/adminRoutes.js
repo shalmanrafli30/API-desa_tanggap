@@ -4,5 +4,6 @@ const adminController = require('../controllers/adminControllers');
 
 router.get('/', adminController.getAllAdmin);
 router.get('/id_admin=:id_admin', adminController.getAdminById);
+router.post('/', adminController.addAdmin);
 
 module.exports = router;
