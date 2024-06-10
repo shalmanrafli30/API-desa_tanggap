@@ -29,7 +29,7 @@ getDetailLaporanById = async (idLaporan) => {
     return result;
 }
 
-const addLaporan = async ({ judulLaporan, isiLaporan, lokasiLaporan, id_user }) => {
+const addLaporan = async ({ judulLaporan, kategori, isiLaporan, lokasiLaporan, id_user }) => {
     const connection = await db.getConnection();
 
     try {
@@ -38,22 +38,31 @@ const addLaporan = async ({ judulLaporan, isiLaporan, lokasiLaporan, id_user }) 
 
         // Tambahkan laporan ke tabel report
         const insertReportQuery = `
-            INSERT INTO report (judulLaporan, isiLaporan, lokasiLaporan, id_user)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO report (judulLaporan, kategori, isiLaporan, lokasiLaporan, id_user)
+            VALUES (?, ?, ?, ?, ?)
         `;
-        const [reportResult] = await connection.execute(insertReportQuery, [judulLaporan, isiLaporan, lokasiLaporan, id_user]);
+        const [reportResult] = await connection.execute(insertReportQuery, [judulLaporan, kategori, isiLaporan, lokasiLaporan, id_user]);
 
         // Ambil idLaporan yang baru ditambahkan
         const idLaporan = reportResult.insertId;
 
         // Tambahkan progres ke tabel progres_laporan
         const insertProgresQuery = `
-            INSERT INTO progres_laporan (idLaporan, deskripsiProgres, status)
-            VALUES (?, ?, ?)
+            INSERT INTO progres_laporan (idLaporan, id_admin, deskripsiProgres, status)
+            VALUES (?, ?, ?, ?)
         `;
-        const deskripsi = 'Laporan diterima oleh bagian bla bla';
+
+        let id_admin = '0000';
+        let deskripsi = 'Laporan diterima oleh bagian bla bla';
+        if (kategori === 'Kebersihan' || kategori === 'Fasilitas Umum') {
+            id_admin = '2000';
+            deskripsi = 'Laporan diterima oleh Seksi Ekonomi dan Pembangunan';
+        } else if (kategori === 'Lalu Lintas' || kategori === 'Keamanan') {
+            id_admin = '2001';
+            deskripsi = 'Laporan diterima oleh Seksi Transportasi dan Ketertiban';
+        }
         const status = 'MENUNGGU';
-        await connection.execute(insertProgresQuery, [idLaporan, deskripsi, status]);
+        await connection.execute(insertProgresQuery, [idLaporan, id_admin, deskripsi, status]);
 
         // Commit transaksi
         await connection.commit();

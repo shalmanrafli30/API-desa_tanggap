@@ -60,13 +60,13 @@ exports.addLaporan = async (req, res) => {
         console.log('ID User:', id_user); // Add this line for debugging
 
         // Extract the report details from the request body
-        const { judulLaporan, isiLaporan, lokasiLaporan } = req.body;
-        if (!judulLaporan || !isiLaporan || !lokasiLaporan) {
+        const { judulLaporan, kategori, isiLaporan, lokasiLaporan } = req.body;
+        if (!judulLaporan || !kategori || !isiLaporan || !lokasiLaporan) {
             return res.status(400).send({ message: 'Please provide all required fields.' });
         }
 
         // Add the new report using the model
-        await model.addLaporan({ judulLaporan, isiLaporan, lokasiLaporan, id_user });
+        await model.addLaporan({ judulLaporan, kategori, isiLaporan, lokasiLaporan, id_user });
 
         // Send a success response
         res.status(201).send({ message: 'Report added successfully.' });
@@ -75,3 +75,4 @@ exports.addLaporan = async (req, res) => {
         res.status(500).send({ message: 'Internal server error.' });
     }
 };
+
