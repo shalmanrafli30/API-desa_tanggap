@@ -76,14 +76,31 @@ const terimaLaporan = async (idLaporan, id_admin, namaAdmin) => {
         throw new Error('Laporan tidak ditemukan');
     }
 
-    const SQLQuery =    `INSERT INTO progres_laporan (idLaporan, id_admin, deskripsiProgres, status)
-                        VALUES (?, ?, ?, ?)`;
     const deskripsi = `Laporan diproses oleh ${namaAdmin}`;
-    const status = 'DIPROSES'
+    const status = 'DIPROSES';
 
+    // Query untuk menyimpan laporan
+    const TerimaSQLQuery = `INSERT INTO progres_laporan (idLaporan, id_admin, deskripsiProgres, status) VALUES (?, ?, ?, ?)`;
     const values = [idLaporan, id_admin, deskripsi, status];
+    
+    try {
+        // Eksekusi query menyimpan laporan
+        await db.execute(TerimaSQLQuery, values);
 
-    return db.execute(SQLQuery, values);
+        // Query untuk mengupdate status laporan
+        const updateSQLQuery = `UPDATE report SET status = ? WHERE idLaporan = ?`;
+        const valuesUpdate = [status, idLaporan];
+
+        // Eksekusi query update status laporan
+        await db.execute(updateSQLQuery, valuesUpdate);
+
+        // Mengembalikan pesan sukses
+        return { success: true, message: 'Laporan diterima dan status berhasil diperbarui' };
+    } catch (error) {
+        // Tangani kesalahan yang mungkin terjadi selama eksekusi query
+        console.error('Error in terimaLaporan:', error.message);
+        throw new Error('Terjadi kesalahan saat memproses laporan');
+    }
 };
 
 const tolakLaporan = async (idLaporan, id_admin, namaAdmin) => {
