@@ -6,6 +6,22 @@ getAllLaporan = () => {
     return db.execute(SQLQuery);
 }
 
+const getLaporanMenunggu = async (id_admin) => {
+    if (!id_admin) {
+        throw new Error('id_admin is required');
+    }
+
+    const SQLQuery = `  SELECT r.* 
+                        FROM report r 
+                        JOIN progres_laporan p ON r.idLaporan = p.idLaporan
+                        WHERE p.id_admin = ? AND r.status = ?
+                        ORDER BY r.idLaporan DESC`;
+
+    const status = "MENUNGGU";
+    return db.execute(SQLQuery, [id_admin, status]);
+};
+
+
 const getUserLaporan = async (id_user) => {
     // Validate id_user
     if (!id_user) {
@@ -82,4 +98,5 @@ module.exports = {
     getDetailLaporanById,
     addLaporan,
     getUserLaporan,
+    getLaporanMenunggu,
 }

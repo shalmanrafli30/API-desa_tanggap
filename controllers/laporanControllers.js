@@ -9,6 +9,27 @@ exports.getAllLaporan = async (req, res) => {
     })
 };
 
+exports.getLaporanMenunggu = async (req, res) => {
+    const id_admin = req.id_admin;
+
+    try {
+        if (!id_admin) {
+            throw new Error('id_admin is required');
+        }
+
+        const result = await model.getLaporanMenunggu(id_admin);
+
+        if (result && result[0].length > 0) {
+            res.status(200).json({ data: result[0] });
+        } else {
+            res.status(404).json({ error: 'No waiting reports found for the provided admin ID' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 exports.getUserLaporan = async (req, res) => {
     try {
         const id_user = req.id_user; // Use the user ID from the authenticated token
