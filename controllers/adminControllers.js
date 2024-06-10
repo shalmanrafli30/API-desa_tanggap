@@ -64,7 +64,7 @@ exports.loginAdmin = async (req, res) => {
     try {
         const admin = await model.loginAdmin(username, password);
         // Generate token
-        const token = jwt.sign({ id_admin: admin.id_admin, username: admin.username }, JWT_SECRET, {
+        const token = jwt.sign({ id_admin: admin.id_admin, username: admin.username, name: admin.name }, JWT_SECRET, {
             expiresIn: '1d'
         });
 
@@ -85,5 +85,49 @@ exports.logoutAdmin = async (req, res) => {
         res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to logout user' });
+    }
+};
+
+exports.terimaLaporan = async (req, res) => {
+    const { idLaporan } = req.params;
+    const id_admin = req.id_admin;
+    const namaAdmin = req.name;
+    console.log(idLaporan);
+    console.log(id_admin);
+    console.log(namaAdmin);
+
+    try {
+        const result = await model.terimaLaporan(idLaporan, id_admin, namaAdmin);
+
+        if (result) {
+            res.status(200).json({ message: 'Laporan diterima' });
+        } else {
+            res.status(404).json({ error: 'Laporan not found or no changes applied' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+exports.tolakLaporan = async (req, res) => {
+    const { idLaporan } = req.params;
+    const id_admin = req.id_admin;
+    const namaAdmin = req.name;
+    console.log(idLaporan);
+    console.log(id_admin);
+    console.log(namaAdmin);
+
+    try {
+        const result = await model.tolakLaporan(idLaporan, id_admin, namaAdmin);
+
+        if (result) {
+            res.status(200).json({ message: 'Laporan ditolak' });
+        } else {
+            res.status(404).json({ error: 'Laporan not found or no changes applied' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };

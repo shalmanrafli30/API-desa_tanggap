@@ -1,5 +1,6 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
+const laporan = require('../controllers/laporanControllers');
 
 const getAllAdmin = () => {
     const SQLQuery = 'SELECT * FROM admin';
@@ -70,9 +71,41 @@ const loginAdmin = async (username, password) => {
     return user;
 };
 
+const terimaLaporan = async (idLaporan, id_admin, namaAdmin) => {
+    if (!idLaporan) {
+        throw new Error('Laporan tidak ditemukan');
+    }
+
+    const SQLQuery =    `INSERT INTO progres_laporan (idLaporan, id_admin, deskripsiProgres, status)
+                        VALUES (?, ?, ?, ?)`;
+    const deskripsi = `Laporan diproses oleh ${namaAdmin}`;
+    const status = 'DIPROSES'
+
+    const values = [idLaporan, id_admin, deskripsi, status];
+
+    return db.execute(SQLQuery, values);
+};
+
+const tolakLaporan = async (idLaporan, id_admin, namaAdmin) => {
+    if (!idLaporan) {
+        throw new Error('Laporan tidak ditemukan');
+    }
+
+    const SQLQuery =    `INSERT INTO progres_laporan (idLaporan, id_admin, deskripsiProgres, status)
+                        VALUES (?, ?, ?, ?)`;
+    const deskripsi = `Laporan ditolak oleh ${namaAdmin}`;
+    const status = 'DITOLAK'
+
+    const values = [idLaporan, id_admin, deskripsi, status];
+
+    return db.execute(SQLQuery, values);
+};
+
 module.exports = {
     getAllAdmin,
     getAdminById,
     addAdmin,
     loginAdmin,
+    terimaLaporan,
+    tolakLaporan,
 }

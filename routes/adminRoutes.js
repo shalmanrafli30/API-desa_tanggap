@@ -8,5 +8,7 @@ router.get('/id_admin=:id_admin', adminController.getAdminById);
 router.post('/', adminController.addAdmin);
 router.post('/login', adminController.loginAdmin);
 router.post('/logout', authenticateToken.authenticateTokenAdmin, adminController.logoutAdmin);
+router.post('/terima-laporan/idLaporan=:idLaporan', authenticateToken.authenticateTokenAdmin, adminController.terimaLaporan);
+router.post('/tolak-laporan/idLaporan=:idLaporan', authenticateToken.authenticateTokenAdmin, adminController.tolakLaporan);
 
 module.exports = router;
