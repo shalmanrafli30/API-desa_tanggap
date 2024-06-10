@@ -29,13 +29,44 @@ getDetailLaporanById = async (idLaporan) => {
     return result;
 }
 
-addLaporan = async ({ judulLaporan, isiLaporan, lokasiLaporan, id_user }) => {
-    const SQLQuery = `
-        INSERT INTO report (judulLaporan, isiLaporan, lokasiLaporan, id_user)
-        VALUES (?, ?, ?, ?)
-    `;
-    await db.execute(SQLQuery, [judulLaporan, isiLaporan, lokasiLaporan, id_user]);
-}
+const addLaporan = async ({ judulLaporan, isiLaporan, lokasiLaporan, id_user }) => {
+    const connection = await db.getConnection();
+
+    try {
+        // Mulai transaksi
+        await connection.beginTransaction();
+
+        // Tambahkan laporan ke tabel report
+        const insertReportQuery = `
+            INSERT INTO report (judulLaporan, isiLaporan, lokasiLaporan, id_user)
+            VALUES (?, ?, ?, ?)
+        `;
+        const [reportResult] = await connection.execute(insertReportQuery, [judulLaporan, isiLaporan, lokasiLaporan, id_user]);
+
+        // Ambil idLaporan yang baru ditambahkan
+        const idLaporan = reportResult.insertId;
+
+        // Tambahkan progres ke tabel progres_laporan
+        const insertProgresQuery = `
+            INSERT INTO progres_laporan (idLaporan, deskripsiProgres, status)
+            VALUES (?, ?, ?)
+        `;
+        const deskripsi = 'Laporan diterima oleh bagian bla bla';
+        const status = 'MENUNGGU';
+        await connection.execute(insertProgresQuery, [idLaporan, deskripsi, status]);
+
+        // Commit transaksi
+        await connection.commit();
+    } catch (error) {
+        // Rollback transaksi jika ada kesalahan
+        await connection.rollback();
+        throw error;
+    } finally {
+        // Pastikan koneksi ditutup setelah operasi selesai
+        connection.release();
+    }
+};
+
 
 module.exports = {
     getAllLaporan,
