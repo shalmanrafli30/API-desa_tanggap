@@ -49,8 +49,30 @@ const addAdmin = async (body) => {
 
     return db.execute(SQLQuery, values);
 };
+
+const loginAdmin = async (username, password) => {
+    if (!username || !password) {
+        throw new Error('Please provide both username and password');
+    }
+
+    const [users] = await db.execute(`SELECT * FROM admin WHERE username = ?`, [username]);
+    if (users.length === 0) {
+        throw new Error('Invalid username');
+    }
+
+    const user = users[0];
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        throw new Error('Invalid password');
+    }
+
+    return user;
+};
+
 module.exports = {
     getAllAdmin,
     getAdminById,
-    addAdmin
+    addAdmin,
+    loginAdmin,
 }
