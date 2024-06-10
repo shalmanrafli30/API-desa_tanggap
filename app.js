@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const port = process.env.PORT;
@@ -10,7 +11,7 @@ const reportRoutes = require('./routes/laporanRoutes');
 // const authenticated = require('./middleware/authMiddleware');
 
 app.use(morgan('dev'))
-
+app.use(cors({credentials:true, origin:'http://localhost:3000'}));
 app.use(middlewareLogReq);
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use('/users', userRoutes);
