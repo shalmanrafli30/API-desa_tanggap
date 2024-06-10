@@ -40,7 +40,8 @@ exports.authenticateTokenAdmin = async (req, res, next) => {
         if (err) {
             return res.status(403).json({ error: 'Invalid token' });
         }
-        req.id_user = decoded.id_user; // Store user ID for future use
+        req.id_admin = decoded.id_admin;
+        req.name = decoded.name // Store user ID for future use
         next(); // Proceed to the next middleware or route handler
     });
 };
