@@ -62,7 +62,8 @@ exports.register = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-    const { id_user } = req.params;
+    const id_user = req.id_user;
+    console.log('ID User:', id_user);
     const { fullName, password, address } = req.body;
 
     try {
