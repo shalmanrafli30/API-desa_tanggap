@@ -5,7 +5,7 @@ const laporanController = require('../controllers/laporanControllers');
 const authenticateToken = require('../middleware/authMiddleware');
 
 router.get('/', userController.getAllUsers);
-router.get('/id_user=:id_user', userController.getUserById);
+router.get('/profil', authenticateToken.authenticateToken, userController.getUserById);
 router.post('/', userController.register);
 router.patch('/edit-profil', authenticateToken.authenticateToken, userController.updateUser);
 router.delete('/id_user=:id_user', userController.deleteUser);

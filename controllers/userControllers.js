@@ -16,7 +16,7 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
     try {
-        const { id_user } = req.params;
+        const id_user = req.id_user;
         const data = await model.getUserById(id_user);
         
         res.json({
