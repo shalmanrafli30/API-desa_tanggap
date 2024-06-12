@@ -6,9 +6,9 @@ const authenticateToken = require('../middleware/authMiddleware');
 
 router.get('/', userController.getAllUsers);
 router.get('/profil', authenticateToken.authenticateToken, userController.getUserById);
-router.post('/', userController.register);
+router.post('/register', userController.register);
 router.patch('/edit-profil', authenticateToken.authenticateToken, userController.updateUser);
-router.delete('/id_user=:id_user', userController.deleteUser);
+router.delete('/delete', authenticateToken.authenticateToken, userController.deleteUser);
 router.post('/login', userController.loginUser);
 router.post('/logout', authenticateToken.authenticateToken, userController.logoutUser);
 router.post('/add-laporan', authenticateToken.authenticateToken, laporanController.addLaporan);
